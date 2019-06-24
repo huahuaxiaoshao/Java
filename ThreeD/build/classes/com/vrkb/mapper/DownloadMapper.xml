@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.vrkb.mapper.DownloadMapper">
+
+	<resultMap type="Download" id="downloadResult">
+		<id column="download_id" property="id"/>
+		<result column="download_user" property="user"/>
+		<result column="download_count" property="count"/>
+		<result column="download_date" property="date"/>
+		
+		<!-- 模型详情 association放在底部 -->
+		<association column="download_model" property="model" javaType="ModelBean" >
+			<id column="model_id" property="id"/>
+			<result column="model_path" property="path"/>
+			<result column="model_name" property="name"/>
+			<result column="model_obj_name" property="objName"/>
+			<result column="model_mtl_name" property="mtlName"/>
+			<result column="model_pic_path" property="picPath"/>
+			<result column="model_scale" property="scale"/>
+		</association>
+		
+	</resultMap>
+	
+	 <select id="getDownload" parameterType="int" resultMap="downloadResult">
+        select * from download d,model m where d.download_user=#{user} and d.download_model=m.model_id
+    </select>
+    
+     <select id="getDownloadById" resultMap="downloadResult">
+        select * from download d,model m where d.download_model=#{id} and d.download_model=m.model_id and d.download_user=#{user}
+    </select>
+    
+    <update id="update" parameterType="Download">
+    	update download set download_user=#{user},download_model=#{model.id},download_count=#{count},download_date=#{date}
+    </update>
+    
+    <insert id="save" parameterType="Download">
+    	insert into download(download_user,download_count,download_date,download_model)
+    	values (#{user},#{count},#{date},#{model.id})
+    </insert> 
+	
+</mapper>

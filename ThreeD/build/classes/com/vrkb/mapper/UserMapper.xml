@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.vrkb.mapper.UserMapper">
+	
+	<resultMap type="User" id="userResult">
+		<id column="user_id" property="id"/>
+		<result column="user_password" property="password"/>
+		<result column="user_name" property="name"/>
+		<result column="user_phone" property="phone"/>
+		<result column="user_email" property="email"/>
+		<result column="user_grade" property="grade"/>
+		
+		<!--  上传记录列表详情
+		<collection property="uploadDetails" ofType="Upload">
+			<id column="upload_id" property="id"/>
+			<result column="upload_count" property="count"/>
+			<result column="upload_date" property="date"/>
+			
+			模型详情
+			<association property="model" javaType="ModelBean">
+				<id column="model_id" property="id"/>
+				<result column="model_path" property="path"/>
+				<result column="model_name" property="name"/>
+				<result column="model_obj_name" property="objName"/>
+				<result column="model_mtl_name" property="mtlName"/>
+				<result column="model_pic_path" property="picPath"/>
+				<result column="model_scale" property="scale"/>
+			</association>
+			
+		</collection> -->
+	</resultMap>
+	
+	<insert id="save" keyColumn="user_id" keyProperty="id" useGeneratedKeys="true">
+		insert into user(user_name,user_password,user_phone,user_grade,user_email)
+		values(#{name},#{password},#{phone},#{grade},#{email})
+	</insert>
+	
+	<select id="getPassword" resultMap="userResult">
+		select * from user where user_email = #{email}
+	</select>
+	
+	<select id="getOrdinaryUsers" resultMap="userResult">
+		select * from user where user_grade != 'admin'
+	</select>
+	
+	<update id="updateGrade">
+		update user set user_grade=#{grade} where user_id=#{id}
+	</update>
+	
+</mapper>

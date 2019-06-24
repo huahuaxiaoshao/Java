@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.vrkb.mapper.AuditMapper">
+	<resultMap type="Audit" id="auditResult">
+		<result column="audit_id" property="id"/>
+		<result column="audit_type" property="type"/>
+		<association property="upload" column="audit_upload" javaType="Upload">
+			<result column="upload_id" property="id"/>
+			<result column="upload_user" property="user"/>
+			<result column="upload_count" property="count"/>
+			<result column="upload_date" property="date"/>
+		
+			<!-- 模型详情 association放在底部-->
+			<association property="model" javaType="ModelBean" column="upload_model">
+				<result column="model_id" property="id"/>
+				<result column="model_path" property="path"/>
+				<result column="model_name" property="name"/>
+				<result column="model_obj_name" property="objName"/>
+				<result column="model_mtl_name" property="mtlName"/>
+				<result column="model_pic_path" property="picPath"/>
+				<result column="model_scale" property="scale"/>
+				<result column="model_download_count" property="downloadCount"/>
+				<result column="model_check_type" property="checkType"/>
+				<result column="model_description" property="description"/>
+			</association>
+		</association>
+	</resultMap>
+	
+	<select id="getAuditById" resultMap="auditResult">
+		select * from audit a,upload u,model m where a.audit_upload=u.upload_id 
+		and u.upload_model=m.model_id and a.audit_id=#{id}
+	</select>
+	
+	<select id="findAll" resultMap="auditResult">
+		select * from audit a,upload u,model m where a.audit_upload=u.upload_id 
+		and u.upload_model=m.model_id
+	</select>
+	
+	<insert id="save">
+		insert into audit (audit_upload,audit_type)
+		values (#{upload.id},#{type})
+	</insert>
+	
+	<update id="update">
+		update audit set audit_type=#{type} where audit_id=#{id}
+	</update>
+	
+</mapper>

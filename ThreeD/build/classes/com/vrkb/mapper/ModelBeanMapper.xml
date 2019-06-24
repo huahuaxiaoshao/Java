@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.vrkb.mapper.ModelBeanMapper">
+	
+	<resultMap type="ModelBean" id="modelResult">
+		<id column="model_id" property="id"/>
+		<result column="model_path" property="path"/>
+		<result column="model_name" property="name"/>
+		<result column="model_obj_name" property="objName"/>
+		<result column="model_mtl_name" property="mtlName"/>
+		<result column="model_pic_path" property="picPath"/>
+		<result column="model_scale" property="scale"/>
+		<result column="model_download_count" property="downloadCount"/>
+		<result column="model_check_type" property="checkType"/>
+		<result column="model_description" property="description"/>
+	</resultMap>
+
+	<!-- 取得插入数据后的id -->
+	<insert id="save" keyColumn="model_id" keyProperty="id" useGeneratedKeys="true">
+		insert into model(model_path,model_name,model_obj_name,model_mtl_name,model_scale,model_pic_path,
+		model_download_count,model_check_type,model_description) values(#{path},#{name},#{objName},#{mtlName},
+		#{scale},#{picPath},#{downloadCount},#{checkType},#{description})
+	</insert>
+
+	<update id="updatePart">
+		update model
+		set model_path = #{path},
+		model_name=#{name},
+		model_obj_name=#{objName},
+		model_mtl_name=#{mtlName},
+		model_pic_path=#{picPath},
+		model_scale=#{scale},
+		model_check_type=#{checkType},
+		model_description=#{description}
+		where model_id = #{id}
+	</update>
+	
+	<update id="updateAll">
+		update model
+		set model_path = #{path},
+		model_name=#{name},
+		model_obj_name=#{objName},
+		model_mtl_name=#{mtlName},
+		model_pic_path=#{picPath},
+		model_scale=#{scale},
+		model_download_count=#{downloadCount},
+		model_check_type=#{checkType},
+		model_description=#{description}
+		where model_id = #{id}
+	</update>
+	
+	<delete id="delete">
+		delete from model
+		where model_id = #{id}
+	</delete>
+
+	<select id="findById" resultMap="modelResult">
+		select *
+		from model
+		where model_id = #{id}
+	</select>
+	
+	<select id="findAll" resultMap="modelResult">
+		select * 
+		from model where model_check_type='yes'
+	</select>
+	
+	<!-- 首页查询 -->
+     <select id="getModels"  resultType="ModelBean" >
+         select model_id id,model_name name,model_path path,model_obj_name objName,
+         model_mtl_name mtlName,model_scale scale,model_pic_path picPath,
+		 model_download_count downloadCount,model_check_type checkType,
+		 model_description description from model where model_check_type='yes' limit 0,#{size} 
+     </select>
+	
+	 <!-- 分页使用SQL -->
+     <select id="getModelByPage"  resultType="ModelBean" >
+         select model_id id,model_name name,model_path path,model_obj_name objName,
+         model_mtl_name mtlName,model_scale scale,model_pic_path picPath,
+		 model_download_count downloadCount,model_check_type checkType,
+		 model_description description from model where model_check_type='yes' limit #{startRow},#{pageSize} 
+     </select>
+	
+</mapper>

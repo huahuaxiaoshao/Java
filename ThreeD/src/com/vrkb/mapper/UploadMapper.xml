@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.vrkb.mapper.UploadMapper">
+
+	<resultMap type="Upload" id="uploadResult">
+		<result column="upload_id" property="id"/>
+		<result column="upload_user" property="user"/>
+		<result column="upload_date" property="date"/>
+		
+		<!-- 模型详情 association放在底部-->
+		<association property="model" javaType="ModelBean" column="upload_model">
+			<result column="model_id" property="id"/>
+			<result column="model_path" property="path"/>
+			<result column="model_name" property="name"/>
+			<result column="model_obj_name" property="objName"/>
+			<result column="model_mtl_name" property="mtlName"/>
+			<result column="model_pic_path" property="picPath"/>
+			<result column="model_scale" property="scale"/>
+		</association>
+		
+	</resultMap>
+	
+	 <select id="getUpload" parameterType="int" resultMap="uploadResult">
+        select * from upload u,model m where u.upload_user=#{user} and m.model_id=u.upload_model
+    </select>
+    
+    <delete id="delete" parameterType="int">
+    	delete from upload where upload_id = #{id}
+    </delete>
+    
+    <insert id="save" keyColumn="upload_id" keyProperty="id" useGeneratedKeys="true" parameterType="Upload">
+    	insert into upload(upload_user,upload_date,upload_model)
+    	values (#{user},#{date},#{model.id})
+    </insert> 
+	
+	
+</mapper>
